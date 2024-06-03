@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download de APKs Modificados - Sobre Tudo</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Raleway:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="menu">
+            <div class="logo">
+                <img src="images/standard.gif" alt="Bem-vindo ao Download de APKs Modificados">
+            </div>
+            <div class="menu_toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="menu_buttons">
+                <a href="index.html">Home</a>
+                <a href="contact.html">Contato</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="apk-item">
+            <h2>Nebula Cloud Gaming</h2>
+            <p><strong>Versão:</strong> 1.0.0</p>
+            <p><strong>Tamanho:</strong> 15 MB</p>
+            <p><strong>Compatibilidade:</strong> Android 8.0 ou superior</p>
+            <p><strong>Descrição:</strong> Nebula Cloud Gaming oferece uma experiência de jogo incrível diretamente da nuvem.</p>
+            <a href="https://fbol.top/WJaD" class="download-button" download><i class="fas fa-download"></i> Baixar APK</a>
+        </div>
+    </main>
+
+    <footer>
+        <p class="copyright">&copy; 2024 Sobre Tudo. Todos os direitos reservados Ao Apk Revolution X.</p>
+    </footer>
+    
+    <div class="toast">Arquivo baixado com sucesso!</div>
+
+    <!-- Modal de Aceitação -->
+    <div id="disclaimerModal" class="modal">
+        <div class="modal-content">
+            <h2>Aviso de Responsabilidade</h2>
+            <p>Não nos responsabilizamos por quaisquer atos decorrentes do uso dos APKs disponibilizados neste site. Ao clicar em "Concordo", você aceita total responsabilidade pelo uso dos arquivos.</p>
+            <button id="agreeButton">Concordo</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const downloadButtons = document.querySelectorAll(".download-button");
+            const toast = document.querySelector(".toast");
+            const modal = document.getElementById("disclaimerModal");
+            const agreeButton = document.getElementById("agreeButton");
+            const menuToggle = document.querySelector(".menu_toggle");
+            const menuButtons = document.querySelector(".menu_buttons");
+
+            // Mostrar o modal de aviso ao carregar a página
+            modal.style.display = "block";
+
+            // Esconder o modal e permitir a interação com a página após o usuário concordar
+            agreeButton.addEventListener("click", function() {
+                modal.style.display = "none";
+            });
+
+            // Mostrar a mensagem de sucesso ao clicar no botão de download
+            downloadButtons.forEach(button => {
+                button.addEventListener("click", function() {
+                    toast.style.display = "block";
+                    setTimeout(() => {
+                        toast.style.display = "none";
+                    }, 3000);
+                });
+            });
+
+            // Alternar o menu em dispositivos móveis
+            menuToggle.addEventListener("click", function() {
+                menuButtons.classList.toggle("show");
+            });
+        });
+    </script>
+</body>
+</html>
