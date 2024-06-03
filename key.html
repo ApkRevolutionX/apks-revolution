@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download de APKs Modificados - Sobre Tudo</title>
+    <link rel="stylesheet" href="key.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Raleway:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="menu">
+            <div class="logo">
+                <img src="images/standard.gif" alt="Bem-vindo ao Download de APKs Modificados">
+            </div>
+            <div class="menu_toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="menu_buttons">
+                <a href="index.html">Home</a>
+                <a href="contact.html">Contato</a>
+                <a href="key.html">Key</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div id="currentKeyDisplay" class="apk-item">
+            <!-- A chave atual será exibida aqui -->
+        </div>
+    </main>
+
+    <footer>
+        <p class="copyright">&copy; 2024 Sobre Tudo. Todos os direitos reservados Ao Apk Revolution X.</p>
+    </footer>
+    
+    <div class="toast">Chave atualizada com sucesso!</div>
+
+    <!-- Modal de Aceitação -->
+    <div id="disclaimerModal" class="modal">
+        <div class="modal-content">
+            <h2>Aviso de Responsabilidade</h2>
+            <p>Não nos responsabilizamos por quaisquer atos decorrentes do uso dos APKs disponibilizados neste site. Ao clicar em "Concordo", você aceita total responsabilidade pelo uso dos arquivos.</p>
+            <button id="agreeButton">Concordo</button>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "SUA_API_KEY",
+            authDomain: "apkrevolution-f3374.firebaseapp.com",
+            projectId: "apkrevolution-f3374",
+            storageBucket: "apkrevolution-f3374.appspot.com",
+            messagingSenderId: "420904655089",
+            appId: "1:420904655089:web:67b206e82f68ba9f52f150",
+            measurementId: "G-W6P0TK6KLX"
+        };
+        firebase.initializeApp(firebaseConfig);
+
+        // Referência ao banco de dados
+        var database = firebase.database();
+
+        // Função para gerar uma nova chave
+        function generateNewKey() {
+            var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var key = '';
+            for (var i = 0; i < 10; i++) {
+                key += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return key;
+        }
+
+        // Função para verificar se a chave expirou
+        function isKeyExpired(expirationDate) {
+            var now = new Date();
+            return now > new Date(expirationDate);
+        }
+
+        // Função para atualizar a chave no Firebase
+        function updateKeyInFirebase() {
+            var firebaseRef = database.ref('/keys');
+            firebaseRef.once('value', function(snapshot) {
+                var data = snapshot.val();
+                if (!data || isKeyExpired(data.expirationDate)) {
+                    var newKey = generateNewKey(); // Gera uma nova chave
+                    var expirationDate = new Date();
+                    expirationDate.setDate(expirationDate.getDate() + 1); // Define a data de expiração para 24 horas a partir de agora
+
+                    // Atualiza os dados no Firebase
+                    firebaseRef.set({
+                        currentKey: newKey,
+                        expirationDate: expirationDate.toISOString() // Salva a data de expiração como string ISO
+                    }, function(error) {
+                        if (error) {
+                            console.error("Erro ao atualizar a chave:", error);
+                        } else {
+                            // Exibe o toast de sucesso
+                            var toast = document.querySelector(".toast");
+                            toast.style.display = "block";
+                            setTimeout(function() {
+                                toast.style.display = "none";
+                            }, 3000);
+
+                            // Exibe a nova chave na página
+                            document.getElementById('currentKeyDisplay').innerHTML = `
+                                <h2>Chave Atual:</h2>
+                                <p>${newKey}</p>
+                                <p><strong>Expira em:</strong> ${expirationDate}</p>
+                            `;
+                        }
+                    });
+                } else {
+                    // Exibe a chave existente na página
+                    document.getElementById('currentKeyDisplay').innerHTML = `
+                        <h2>Chave Atual:</h2>
+                        <p>${data.currentKey}</p>
+                        <p><strong>Expira em:</strong> ${new Date(data.expirationDate)}</p>
+                    `;
+                }
+            });
+        }
+
+        // Chame a função de atualização da chave pela primeira vez ao carregar a página
+        updateKeyInFirebase();
+
+        // Atualizar a chave a cada 24 horas
+        setInterval(updateKeyInFirebase, 24 * 60 * 60 * 1000);
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const toast = document.querySelector(".toast");
+            const modal = document.getElementById("disclaimerModal");
+            const agreeButton = document.getElementById("agreeButton");
+            const menuToggle = document.querySelector(".menu_toggle");
+            const menuButtons = document.querySelector(".menu_buttons");
+
+            // Mostrar o modal de aviso ao carregar a página
+            modal.style.display = "block";
+
+            // Esconder o modal e permitir a interação com a página após o usuário concordar
+            agreeButton.addEventListener("click", function() {
+                modal.style.display = "none";
+                // Exibir a chave apenas após o usuário concordar
+                document.getElementById('currentKeyDisplay').style.display = "block";
+            });
+
+            // Alternar o menu em dispositivos móveis
+            menuToggle.addEventListener("click", function() {
+                menuButtons.classList.toggle("show");
+            });
+        });
+    </script>
+</body>
+</html>
